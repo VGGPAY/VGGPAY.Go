@@ -7,14 +7,14 @@ import (
 	"fmt"
 )
 
-// CreateTopUp 创建充值订单并发送请求
+// CreateTopUp Create a top-up order and send the request
 func CreateTopUp(config *AuthConfigConfig, data map[string]interface{}) (int, string, error) {
 	// 从config中提取项目 ID, SecretKey, SecretIV
 	projectId := config.ProjectId
 	SecretKey := config.SecretKey
 	SecretIV := config.SecretIV
 
-	// 给 data 设置默认值（确保必要字段存在）
+	// Set default values  (make sure required fields exist)
 	if data["projectid"] == nil {
 		data["projectid"] = projectId
 	}
@@ -22,16 +22,16 @@ func CreateTopUp(config *AuthConfigConfig, data map[string]interface{}) (int, st
 		data["firewall"] = "2"
 	}
 
-	// 将数据转换为JSON
+	// Convert data to JSON
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return 0, "", fmt.Errorf("failed to marshal data: %v", err)
 	}
 
-	// 加密请求数据
+	// Encrypting request data
 	encryptedData := EncryptData(string(jsonData), SecretIV, SecretKey)
 
-	// 构建POST数据
+	// Constructing POST data
 	postData := map[string]interface{}{
 		"data":      encryptedData,
 		"projectid": projectId,
@@ -41,13 +41,13 @@ func CreateTopUp(config *AuthConfigConfig, data map[string]interface{}) (int, st
 		return 0, "", fmt.Errorf("failed to marshal post data: %v", err)
 	}
 
-	// 发送HTTP请求
+	// Sending HTTP Request
 	url := "https://sapi.vggpay.com/api/v2/createtopup"
 	statusCode, responseBody, err := SendRequest(url, postDataBytes)
 	if err != nil {
 		return statusCode, responseBody, fmt.Errorf("request failed: %v", err)
 	}
 
-	// 返回状态码和响应体
+	// Return status code and response body
 	return statusCode, responseBody, nil
 }

@@ -45,3 +45,40 @@ func pad(data []byte, blockSize int) []byte {
 	padText := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(data, padText...)
 }
+
+// 实现 PKCS7 反向填充算法
+func pkcs7Unpad(data []byte) []byte {
+	length := len(data)
+	unpadding := int(data[length-1])
+	return data[:(length - unpadding)]
+}
+
+func decryptAES(encryptedData string, key string, iv string) (string, error) {
+	keyBytes, err := hex.DecodeString(key)
+	if err != nil {
+		return "", err
+	}
+
+	ivBytes, err := hex.DecodeString(iv)
+	if err != nil {
+		return "", err
+	}
+
+	encrypted, err := base64.StdEncoding.DecodeString(encryptedData)
+	if err != nil {
+		return "", err
+	}
+
+	block, err := aes.NewCipher(keyBytes)
+	if err != nil {
+		return "", err
+	}
+
+	mode := cipher.NewCBCDecrypter(block, ivBytes)
+	decrypted := make([]byte, len(encrypted))
+	mode.CryptBlocks(decrypted, encrypted)
+
+	decrypted = pkcs7Unpad(decrypted)
+
+	return string(decrypted), nil
+}

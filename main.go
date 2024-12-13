@@ -9,6 +9,7 @@ import (
 
 func main() {
 
+	// Set your project ID and key information
 	config := vggpayment.AuthConfig(
 		"999DEMO",
 		"88d4012da55e249ab48cffbe2f19d6326e524680d5dfa8b5990b02fdc9473682",
@@ -50,5 +51,16 @@ func main() {
 		fmt.Println("Response Status:", statusCode2)
 		fmt.Println("Response Body:", responseBody2)
 	}
+
+	fmt.Println("VGGPay sends callback data to your server. Here is an example of how to decrypt the callback data.:")
+
+	encryptedData := "jdtdW1+nP8D3geSHQ0+5h0V5Dpez3Lmon0dpW6Dd4BnOEPDqdWNeuow7MM0XHxshHDJxP1QXslO81Enw+JryoRqEWCQYaS282TjqxXtxXfkL1NeLqwlJsKk/EKCnlDGZy2tP5fgCrGaWxAhGWVUtrTppidgFmJrHGh1c5qKFZe0jsxzIY+YI37KyhsOCJzKYgP4GwkQljh+SNF0AuH6vmnI710cczfIXjT2/GJjnJugnVtYuV/W4UN8qgPj3NAZWuDXM6oe1xTufGb8lNU1HctbBRheqUU2/xyGqJz8AOZnb9Z6//r7U90vfdhBolZ94PojBucyifPyShnTaNS+Uy4ZB6UmACWmFtDZTjmOzLbm/dL0ppFVxqMbxQjpTr7OeZKHEkMZLoxJygjThoTbUNQspM5DeVgwgeXHBUnlGma9MkOuIPppfbWrGbtlpZVj6"
+
+	decryptedData, err3 := vggpayment.DecryptData(config, encryptedData)
+	if err3 != nil {
+		log.Fatal("Error decrypting data:", err3)
+	}
+
+	fmt.Println("Decrypted Data:", decryptedData)
 
 }
