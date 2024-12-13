@@ -10,3 +10,8 @@ See the "main.go" file for usage and examples.
 
 Run "go run main.go" directly to debug.
 
+ 
+
+# Error code Description
+https://www.vggpay.com/business-code
+
